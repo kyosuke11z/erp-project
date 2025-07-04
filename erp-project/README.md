@@ -3,7 +3,8 @@
 [![PHP Version](https://img.shields.io/badge/PHP-8.4+-777BB4?style=for-the-badge&logo=php)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![Livewire Version](https://img.shields.io/badge/Livewire-3.x-4d52c1?style=for-the-badge&logo=livewire)](https://livewire.laravel.com)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+
 
 โปรเจกต์ Portfolio สำหรับสร้างระบบ Enterprise Resource Planning (ERP) พื้นฐานด้วยเทคโนโลยีที่ทันสมัย ออกแบบมาเพื่อการจัดการข้อมูลหลักของธุรกิจอย่างมีประสิทธิภาพและมอบประสบการณ์การใช้งานที่รวดเร็ว
 
