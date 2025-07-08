@@ -8,24 +8,15 @@ use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // สร้างข้อมูลหมวดหมู่ตัวอย่าง
         $categories = [
-            ['name' => 'Electronics'],
-            ['name' => 'Books & Audible'],
-            ['name' => 'Clothing, Shoes & Jewelry'],
-            ['name' => 'Home & Kitchen'],
-            ['name' => 'Sports & Outdoors'],
-            ['name' => 'Toys & Games'],
-            ['name' => 'Health & Personal Care'],
+            ['name' => 'เครื่องเขียน', 'description' => 'อุปกรณ์สำหรับงานเขียนและสำนักงาน'],
+            ['name' => 'อุปกรณ์อิเล็กทรอนิกส์', 'description' => 'แกดเจ็ตและอุปกรณ์เสริมต่างๆ'],
+            ['name' => 'ของใช้ในบ้าน', 'description' => 'สินค้าสำหรับใช้ในชีวิตประจำวัน'],
+            ['name' => 'หนังสือ', 'description' => 'หนังสือและสื่อสิ่งพิมพ์'],
         ];
 
-        // วนลูปเพื่อสร้างข้อมูลแต่ละรายการโดยใช้ Eloquent's create method
-        // เพื่อให้ timestamps (created_at, updated_at) ถูกสร้างโดยอัตโนมัติ
         foreach ($categories as $category) {
             Category::create($category);
         }

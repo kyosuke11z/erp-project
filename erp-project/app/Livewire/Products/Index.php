@@ -2,94 +2,56 @@
 
 namespace App\Livewire\Products;
 
-use App\Models\Category;
 use App\Models\Product;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
+    // ใช้งาน Trait สำหรับการแบ่งหน้าและการอัปโหลดไฟล์
     use WithPagination;
 
-    // Properties for Modals and Search
-    public bool $showModal = false;
+    // --- Properties สำหรับจัดการสถานะของ UI ---
     public bool $showDeleteModal = false;
 
     #[Url(as: 's', keep: true)]
     public string $search = '';
 
-    // Properties for form fields
-    public string $sku = '';
-    public string $name = '';
-    public string $description = '';
-    public $selling_price = 0;
-    public int $quantity = 0;
-    public $category_id = '';
-
-    // Properties for handling state
-    public ?Product $editing = null;
+    // --- Properties สำหรับจัดการสถานะของข้อมูล (กำลังแก้ไข, กำลังลบ) ---
     public ?Product $deleting = null;
-
-    // Dynamic validation rules
-    public function rules()
+    
+    /**
+     * ดักฟัง event 'product-saved' จาก component ลูก (ProductForm)
+     * การมีเมธอดนี้อยู่ (แม้จะว่างเปล่า) จะทำให้ Livewire ทำการ re-render component นี้ใหม่
+     * ซึ่งจะดึงข้อมูลสินค้าล่าสุดมาแสดงผลโดยอัตโนมัติ
+     */
+    #[On('product-saved')]
+    public function refreshProductList(): void
     {
-        return [
-            'sku' => [
-                'required',
-                'string',
-                'max:255',
-                \Illuminate\Validation\Rule::unique('products')->ignore($this->editing?->id),
-            ],
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'selling_price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'category_id' => 'required|exists:categories,id',
-        ];
+        // ไม่ต้องทำอะไรในนี้ แค่มีไว้เพื่อรับ event
+    }
+    /**
+     * ส่ง Event เพื่อเปิดฟอร์มสำหรับสร้างสินค้าใหม่
+     */
+    public function create(): void
+    {
+        $this->dispatch('open-product-form');
     }
 
-    public function openModal(): void
-    {
-        $this->reset();
-        $this->resetErrorBag();
-        $this->showModal = true;
-    }
-
-    public function closeModal(): void
-    {
-        $this->showModal = false;
-    }
-
-    public function save(): void
-    {
-        $validated = $this->validate();
-
-        if ($this->editing) {
-            $this->editing->update($validated);
-            session()->flash('success', 'อัปเดตสินค้าเรียบร้อยแล้ว');
-        } else {
-            Product::create($validated);
-            session()->flash('success', 'เพิ่มสินค้าเรียบร้อยแล้ว');
-        }
-
-        $this->closeModal();
-    }
-
-    public function edit(Product $product): void
-    {
-        $this->editing = $product;
-        $this->fill($product); // ใช้ fill เพื่อเติมข้อมูลทั้งหมดจาก model
-        $this->resetErrorBag();
-        $this->showModal = true;
-    }
-
+    /**
+     * เปิด Modal เพื่อยืนยันการลบสินค้า
+     */
     public function confirmDelete(Product $product): void
     {
         $this->deleting = $product;
         $this->showDeleteModal = true;
     }
 
+    /**
+     * ทำการลบสินค้า (Soft Delete)
+     */
     public function delete(): void
     {
         if ($this->deleting) {
@@ -99,16 +61,27 @@ class Index extends Component
         $this->showDeleteModal = false;
     }
 
+    /**
+     * ส่ง Event เพื่อเปิดฟอร์มสำหรับแก้ไขสินค้า
+     */
+    public function edit(Product $product): void
+    {
+        $this->dispatch('open-product-form', productId: $product->id);
+    }
+
+
+    /**
+     * Render component เพื่อแสดงผล
+     */
     public function render()
     {
+        // ดึงข้อมูลสินค้าพร้อมกับข้อมูลหมวดหมู่ที่เกี่ยวข้อง
         $products = Product::with('category')
             ->where(fn($q) => $q->where('name', 'like', "%{$this->search}%")->orWhere('sku', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(10);
 
-        return view('livewire.products.index', [
-            'products' => $products,
-            'categories' => Category::all(),
-        ])->layout('layouts.app');
+        // ส่งข้อมูลไปยัง view
+        return view('livewire.products.index', ['products' => $products])->layout('layouts.app');
     }
 }

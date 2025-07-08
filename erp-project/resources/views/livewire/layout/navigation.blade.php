@@ -44,6 +44,14 @@ new class extends Component
                         <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')" wire:navigate>
                             {{ __('สินค้า') }}
                         </x-nav-link>
+                         {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า --}}
+                    <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')">
+                        {{ __('ลูกค้า') }}
+                    </x-nav-link>
+                     {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย --}}
+                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index') || request()->routeIs('sales.create')">
+                        {{ __('คำสั่งขาย') }}
+                    </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -104,6 +112,14 @@ new class extends Component
                 <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')" wire:navigate>
                     {{ __('สินค้า') }}
                 </x-responsive-nav-link>
+                {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า (สำหรับมือถือ) --}}
+            <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')">
+                {{ __('ลูกค้า') }}
+            </x-responsive-nav-link>
+            {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย (สำหรับมือถือ) --}}
+            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index') || request()->routeIs('sales.create')">
+                {{ __('คำสั่งขาย') }}
+            </x-responsive-nav-link>
             @endrole
         </div>
 

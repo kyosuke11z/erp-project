@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Permission\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Relations\HasMany;use Spatie\Permission\Traits\HasPermissions;
 
 
 class User extends Authenticatable
@@ -47,5 +47,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function comments(): HasMany
+     {
+    return $this->hasMany(Comment::class);
     }
 }
