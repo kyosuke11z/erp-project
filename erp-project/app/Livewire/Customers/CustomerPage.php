@@ -7,10 +7,15 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.app')]
 class CustomerPage extends Component
 {
     use WithPagination;
+
+    // บอกให้ Livewire ใช้ Pagination View ของ Tailwind ที่เราปรับแต่งไว้
+    protected $paginationTheme = 'tailwind';
 
     // คุณสมบัติสำหรับ Modal และฟอร์ม
     public bool $showModal = false; // สถานะการแสดง Modal
@@ -128,6 +133,6 @@ class CustomerPage extends Component
         // ส่ง view ไปแสดงผล พร้อมกับระบุ layout (โดยไม่ต้องส่งข้อมูล header)
         return view('livewire.customers.customer-page', [
             'customers' => $customers,
-        ])->layout('layouts.app');
+        ]);
     }
 }

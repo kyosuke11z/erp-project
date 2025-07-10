@@ -2,5 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\VoltServiceProvider::class,
+    App\Providers\AuthServiceProvider::class,
+    App\Providers\VoltServiceProvider::class, // Volt must be registered before the PDF provider
 ];

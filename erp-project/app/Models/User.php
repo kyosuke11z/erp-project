@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\HasMany;use Spatie\Permission\Traits\HasPermissions;
 
 
 class User extends Authenticatable
@@ -49,8 +48,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function comments(): HasMany
-     {
-    return $this->hasMany(Comment::class);
+    /**
+     * Get the comments for the user.
+     */
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

@@ -45,12 +45,24 @@ new class extends Component
                             {{ __('สินค้า') }}
                         </x-nav-link>
                          {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า --}}
-                    <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')">
+                    <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
                         {{ __('ลูกค้า') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                        {{ __('ซัพพลายเออร์') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
+                        {{ __('ใบสั่งซื้อ') }}
+                    </x-nav-link>
                      {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย --}}
-                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index') || request()->routeIs('sales.create')">
+                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
                         {{ __('คำสั่งขาย') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                        {{ __('จัดการผู้ใช้') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')" wire:navigate>
+                        {{ __('จัดการ Roles') }}
                     </x-nav-link>
                     @endrole
                 </div>
@@ -113,12 +125,24 @@ new class extends Component
                     {{ __('สินค้า') }}
                 </x-responsive-nav-link>
                 {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า (สำหรับมือถือ) --}}
-            <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')">
+            <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
                 {{ __('ลูกค้า') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                {{ __('ซัพพลายเออร์') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
+                {{ __('ใบสั่งซื้อ') }}
+            </x-responsive-nav-link>
             {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย (สำหรับมือถือ) --}}
-            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index') || request()->routeIs('sales.create')">
+            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
                 {{ __('คำสั่งขาย') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                {{ __('จัดการผู้ใช้') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')" wire:navigate>
+                {{ __('จัดการ Roles') }}
             </x-responsive-nav-link>
             @endrole
         </div>

@@ -19,10 +19,18 @@ class ProductSeeder extends Seeder
             return;
         }
  
-        // สร้างสินค้า 50 ชิ้น โดยส่งค่า category_id เข้าไปในขั้นตอน create เลย
-        // Laravel จะทำการสุ่ม category_id ให้ใหม่สำหรับสินค้าแต่ละชิ้น
-        Product::factory()->count(50)->create([
-            'category_id' => fn() => $categoryIds->random(),
-        ]);
+        // สร้างสินค้า 50 ชิ้น โดยใช้ closure เพื่อกำหนดค่าราคาที่สมจริง
+       Product::factory()
+            ->count(50)
+            ->create(function (array $attributes) use ($categoryIds) {
+                $purchasePrice = fake()->randomFloat(2, 50, 1000); // สุ่มราคาซื้อระหว่าง 50 - 1000
+                $sellingPrice = $purchasePrice * fake()->randomFloat(2, 1.2, 1.8); // บวกกำไร 20% - 80%
+
+                return [
+                    'category_id' => $categoryIds->random(),
+                    'purchase_price' => $purchasePrice,
+                    'selling_price' => round($sellingPrice, 2),
+                ];
+            });
     }
 }
