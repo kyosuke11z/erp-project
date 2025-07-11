@@ -14,7 +14,11 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Livewire\Users\UserManagement;
 use App\Livewire\RoleManagement;
 use App\Livewire\RolePermissionManager;
-use App\Livewire\SupplierReturn; // คอมเมนต์: เพิ่ม use statement สำหรับ Component ที่สร้างขึ้นใหม่
+use App\Livewire\SupplierReturn\IndexPage as SupplierReturnIndex;
+use App\Livewire\SupplierReturn\ShowPage as SupplierReturnShow;
+use App\Livewire\SupplierReturn\CreatePage as SupplierReturnCreate;
+use App\Livewire\Products\UpsertPage as ProductUpsertPage;
+
 
 Route::view('/', 'welcome');
 
@@ -24,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
 
+    // คอมเมนต์: นำคอมเมนต์ออกเพื่อคืนค่า Route ทั้งหมดกลับมาใช้งาน
     // User Management (Admin Only)
     Route::get('/users', UserManagement::class)->name('users.index')->middleware('can:view-user-management');
     Route::get('roles', RoleManagement::class)->name('roles.index');
@@ -38,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', Products\Index::class)->name('index');
         Route::get('/trash', Products\Trash::class)->name('trash');
+        Route::get('/create', ProductUpsertPage::class)->name('create');
+        // คอมเมนต์: เปลี่ยนจากการใช้ Route Model Binding อัตโนมัติ มาเป็นการส่ง ID ตรงๆ เพื่อความชัดเจนและแก้ปัญหา 404
+        Route::get('/{productId}/edit', ProductUpsertPage::class)->name('edit')->where('productId', '[0-9]+');
     });
 
     // Customers Module
@@ -64,10 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
     // Purchase Orders Module
     Route::prefix('purchase-orders')->name('purchase-orders.')->group(function () {
         Route::get('/', PurchaseOrders\Index::class)->name('index');
-        
         Route::get('/create', PurchaseOrders\CreatePage::class)->name('create');
         Route::get('/{purchaseOrder}', PurchaseOrders\Show::class)->name('show');
-        // PDF generation route
         Route::get('/{purchaseOrder}/edit', PurchaseOrders\EditPage::class)->name('edit');
         Route::get('/{purchaseOrder}/pdf', [PurchaseOrderController::class, 'generatePdf'])->name('pdf');
     });
@@ -81,9 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
 
     // Supplier Returns Module - จัดกลุ่ม Route สำหรับการคืนสินค้า
     Route::prefix('supplier-returns')->name('supplier-returns.')->group(function () {
-        // You can add an index page later
-        // Route::get('/', SupplierReturn\IndexPage::class)->name('index');
-        Route::get('/create/{goodsReceipt}', SupplierReturn\CreatePage::class)->name('create');
+        Route::get('/', SupplierReturnIndex::class)->name('index');
+        Route::get('/create/{goodsReceipt}', SupplierReturnCreate::class)->name('create');
+        Route::get('/{supplierReturn}', SupplierReturnShow::class)->name('show');
     });
 });
 

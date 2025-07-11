@@ -67,6 +67,10 @@ new class extends Component
                     @endrole
                 </div>
             </div>
+                  <!-- Notifications Bell -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                @livewire('notifications.notification-bell')
+            </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">

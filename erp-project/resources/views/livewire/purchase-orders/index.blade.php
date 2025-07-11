@@ -1,15 +1,20 @@
 <div>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        {{-- คอมเมนต์: ปรับ Layout ให้รองรับ Responsive และจัดกลุ่มปุ่ม Action --}}
+        <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 {{ __('ใบสั่งซื้อ') }}
             </h2>
-            <a href="{{ route('purchase-orders.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                {{ __('สร้างใบสั่งซื้อ') }}
-            </a>
+            {{-- คอมเมนต์: แก้ไข syntax error จาก <<div เป็น <div --}}
+            <div class="flex self-end space-x-2 md:self-auto">
+                {{-- คอมเมนต์: เพิ่มปุ่มสำหรับไปยังหน้ารายการคืนสินค้า --}}
+                <a href="{{ route('supplier-returns.index') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                    รายการคืนสินค้า
+                </a>
+                <a href="{{ route('purchase-orders.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700">
+                    สร้างใบสั่งซื้อ
+                </a>
+            </div>
         </div>
     </x-slot>
 

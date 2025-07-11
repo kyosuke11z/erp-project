@@ -6,7 +6,8 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        {{-- คอมเมนต์: เปลี่ยนจาก max-w-7xl เป็น max-w-screen-2xl เพื่อให้กล่องแสดงผลกว้างขึ้น รองรับตารางที่มีหลายคอลัมน์ --}}
+        <div class="max-w-screen-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
@@ -16,9 +17,10 @@
                         </div>
                         <div class="flex space-x-2">
                             <a href="{{ route('products.trash') }}" wire:navigate class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">ถังขยะ</a>
-                            <button wire:click="create" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            {{-- คอมเมนต์: เปลี่ยนจาก wire:click เป็นการลิงก์ไปยัง Route สำหรับสร้างสินค้า --}}
+                            <a href="{{ route('products.create') }}" wire:navigate class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                                 เพิ่มสินค้าใหม่
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -40,6 +42,7 @@
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">หมวดหมู่</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ราคาขาย</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">จำนวนคงคลัง</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">จุดสั่งซื้อขั้นต่ำ</th>
                                 <th class="px-4 py-2 text-right">การกระทำ</th>
                             </tr>
                             </thead>
@@ -58,18 +61,22 @@
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ $product->sku }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->name }}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ \Illuminate\Support\Str::limit($product->description, 30) }}</td>
+                                    {{-- คอมเมนต์: ปรับปรุงการแสดงผลของคอลัมน์รายละเอียด ให้ตัดข้อความและแสดง ... เมื่อยาวเกินไป และแสดงข้อความเต็มเมื่อเอาเมาส์ไปชี้ --}}
+                                    <td class="px-4 py-2 text-gray-700 max-w-xs truncate" title="{{ $product->description }}">{{ $product->description ?? 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->category->name ?? 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ number_format($product->selling_price, 2) }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->quantity }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->min_stock_level }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-right">
-                                        <button wire:click="edit({{ $product->id }})" class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">แก้ไข</button>
+                                        {{-- คอมเมนต์: เปลี่ยนจาก wire:click เป็นการลิงก์ไปยัง Route สำหรับแก้ไข --}}
+                                        {{-- คอมเมนต์: ปรับการส่งพารามิเตอร์เป็น ID ของสินค้าโดยตรง --}}
+                                        <a href="{{ route('products.edit', ['productId' => $product->id]) }}" wire:navigate class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">แก้ไข</a>
                                         <button wire:click="confirmDelete({{ $product->id }})" class="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-red-700">ลบ</button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-gray-500 py-4">ไม่พบข้อมูลสินค้า</td>
+                                    <td colspan="9" class="text-center text-gray-500 py-4">ไม่พบข้อมูลสินค้า</td>
                                 </tr>
                             @endforelse
                             </tbody>
@@ -82,8 +89,8 @@
         </div>
     </div>
 
-    {{-- เรียกใช้ Component ของฟอร์ม --}}
-    <livewire:products.product-form />
+    {{-- คอมเมนต์: ลบการเรียกใช้ฟอร์มแบบ Modal ออกไป เนื่องจากเราเปลี่ยนไปใช้หน้า UpsertPage แยกต่างหากแล้ว --}}
+    {{-- <livewire:products.product-form /> --}}
 
     {{-- Modal สำหรับยืนยันการลบ --}}
       @if ($showDeleteModal)

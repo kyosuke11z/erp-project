@@ -11,6 +11,11 @@ class SupplierReturn extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'goods_receipt_id',
         'created_by',
@@ -29,5 +34,12 @@ class SupplierReturn extends Model
     {
         return $this->hasMany(SupplierReturnItem::class);
     }
-}
 
+    /**
+     * คอมเมนต์: เพิ่มความสัมพันธ์ createdBy ที่ขาดไป
+     */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+}
