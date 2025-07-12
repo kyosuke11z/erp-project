@@ -23,24 +23,6 @@ class Index extends Component
     public ?Product $deleting = null;
     
     /**
-     * ดักฟัง event 'product-saved' จาก component ลูก (ProductForm)
-     * การมีเมธอดนี้อยู่ (แม้จะว่างเปล่า) จะทำให้ Livewire ทำการ re-render component นี้ใหม่
-     * ซึ่งจะดึงข้อมูลสินค้าล่าสุดมาแสดงผลโดยอัตโนมัติ
-     */
-    #[On('product-saved')]
-    public function refreshProductList(): void
-    {
-        // ไม่ต้องทำอะไรในนี้ แค่มีไว้เพื่อรับ event
-    }
-    /**
-     * ส่ง Event เพื่อเปิดฟอร์มสำหรับสร้างสินค้าใหม่
-     */
-    public function create(): void
-    {
-        $this->dispatch('open-product-form');
-    }
-
-    /**
      * เปิด Modal เพื่อยืนยันการลบสินค้า
      */
     public function confirmDelete(Product $product): void
@@ -60,15 +42,6 @@ class Index extends Component
         }
         $this->showDeleteModal = false;
     }
-
-    /**
-     * ส่ง Event เพื่อเปิดฟอร์มสำหรับแก้ไขสินค้า
-     */
-    public function edit(Product $product): void
-    {
-        $this->dispatch('open-product-form', productId: $product->id);
-    }
-
 
     /**
      * Render component เพื่อแสดงผล

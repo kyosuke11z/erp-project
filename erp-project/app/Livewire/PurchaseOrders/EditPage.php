@@ -5,6 +5,7 @@ namespace App\Livewire\PurchaseOrders;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -24,9 +25,9 @@ class EditPage extends Component
     public $status = '';
 
     // Properties สำหรับรายการสินค้า
-    public $orderItems = [];
-    public $allProducts = [];
-    public $allSuppliers = [];
+    public array $orderItems = [];
+    public Collection $allProducts;
+    public Collection $allSuppliers;
 
     // ยอดรวม
     public $total_amount = 0;
@@ -58,6 +59,15 @@ class EditPage extends Component
     // เมธอด Mount จะทำงานเมื่อ Component ถูกสร้างขึ้น
     public function mount(PurchaseOrder $purchaseOrder)
     {
+        // คอมเมนต์: ตรวจสอบสิทธิ์การแก้ไขโดยใช้ Policy
+        $this->authorize('update', $purchaseOrder);
+
+        // คอมเมนต์: ป้องกันการแก้ไขใบสั่งซื้อที่ไม่ได้อยู่ในสถานะ 'pending'
+        if ($purchaseOrder->status !== 'pending') {
+            session()->flash('error', 'ไม่สามารถแก้ไขใบสั่งซื้อที่ไม่ได้อยู่ในสถานะรอดำเนินการได้');
+            return $this->redirectRoute('purchase-orders.show', ['purchaseOrder' => $purchaseOrder->id], navigate: true);
+        }
+
         $this->purchaseOrder = $purchaseOrder->load('items');
         $this->allSuppliers = Supplier::orderBy('name')->get();
         $this->allProducts = Product::orderBy('name')->get();
@@ -102,9 +112,11 @@ class EditPage extends Component
         $field = $parts[1];
 
         if ($field === 'product_id' && !empty($this->orderItems[$index]['product_id'])) {
-            $product = Product::find($this->orderItems[$index]['product_id']);
+            // คอมเมนต์: ปรับปรุงให้ค้นหาจาก Collection ที่โหลดมาแล้วเพื่อประสิทธิภาพที่ดีกว่า
+            $product = $this->allProducts->firstWhere('id', $this->orderItems[$index]['product_id']);
             if ($product) {
-                $this->orderItems[$index]['price'] = $product->price;
+                // คอมเมนต์: แก้ไขให้ดึงราคาทุน (purchase_price) สำหรับใบสั่งซื้อ
+                $this->orderItems[$index]['price'] = $product->purchase_price ?? 0;
             }
         }
 

@@ -41,6 +41,7 @@
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">รายละเอียด</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">หมวดหมู่</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ราคาขาย</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ราคาทุน</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">จำนวนคงคลัง</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">จุดสั่งซื้อขั้นต่ำ</th>
                                 <th class="px-4 py-2 text-right">การกระทำ</th>
@@ -65,18 +66,19 @@
                                     <td class="px-4 py-2 text-gray-700 max-w-xs truncate" title="{{ $product->description }}">{{ $product->description ?? 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->category->name ?? 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ number_format($product->selling_price, 2) }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ number_format($product->purchase_price ?? 0, 2) }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->quantity }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $product->min_stock_level }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-right">
                                         {{-- คอมเมนต์: เปลี่ยนจาก wire:click เป็นการลิงก์ไปยัง Route สำหรับแก้ไข --}}
-                                        {{-- คอมเมนต์: ปรับการส่งพารามิเตอร์เป็น ID ของสินค้าโดยตรง --}}
-                                        <a href="{{ route('products.edit', ['productId' => $product->id]) }}" wire:navigate class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">แก้ไข</a>
+                                        {{-- คอมเมนต์: แก้ไขการส่งพารามิเตอร์ให้ตรงกับ Route Model Binding (ส่งทั้ง object หรือ key ที่ชื่อ 'product') --}}
+                                        <a href="{{ route('products.edit', ['product' => $product->id]) }}" wire:navigate class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">แก้ไข</a>
                                         <button wire:click="confirmDelete({{ $product->id }})" class="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-red-700">ลบ</button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center text-gray-500 py-4">ไม่พบข้อมูลสินค้า</td>
+                                    <td colspan="10" class="text-center text-gray-500 py-4">ไม่พบข้อมูลสินค้า</td>
                                 </tr>
                             @endforelse
                             </tbody>

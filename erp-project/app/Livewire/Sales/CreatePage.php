@@ -26,6 +26,9 @@ class CreatePage extends Component
 
     public function mount()
     {
+        // คอมเมนต์: ตรวจสอบสิทธิ์การสร้างโดยใช้ Policy
+        $this->authorize('create', SalesOrder::class);
+
         $this->allCustomers = Customer::orderBy('name')->get();
         $this->allProducts = Product::orderBy('name')->get();
 
@@ -82,7 +85,8 @@ class CreatePage extends Component
 
         if ($field === 'product_id' && !empty($value)) {
             $product = $this->allProducts->find($value);
-            $this->orderItems[$index]['price'] = $product?->price ?? 0;
+            // คอมเมนต์: แก้ไขให้ดึงราคาจากฟิลด์ 'selling_price' ของโมเดล Product
+            $this->orderItems[$index]['price'] = $product?->selling_price ?? 0;
             $this->orderItems[$index]['stock'] = $product?->quantity ?? 0; // ดึงข้อมูลสต็อก
         }
 
@@ -122,6 +126,7 @@ class CreatePage extends Component
                 'status' => 'pending', // Default status
                 'total_amount' => $this->total_amount,
                 'notes' => $this->notes,
+                'user_id' => auth()->id(), // คอมเมนต์: บันทึก ID ของผู้ใช้ที่สร้างรายการ
             ]);
 
             // 2. สร้างรายการสินค้า

@@ -34,37 +34,49 @@ new class extends Component
                         {{ __('แดชบอร์ด') }}
                     </x-nav-link>
                     
-                    {{-- ================================================== --}}
-                    {{-- เพิ่มเมนู Categories สำหรับหน้าจอ Desktop ที่นี่ --}}
-                    {{-- ================================================== --}}
-                    @role('Admin')
+                    {{-- คอมเมนต์: เปลี่ยนจากการเช็ค Role 'Admin' มาเป็นการเช็ค Permission เพื่อความยืดหยุ่น --}}
+                    {{-- Manager และ Role อื่นๆ ที่มีสิทธิ์จะเห็นเมนูเหล่านี้ด้วย --}}
+                    @can('user-list')
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('จัดการผู้ใช้งาน') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('category-list')
                         <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')" wire:navigate>
                             {{ __('หมวดหมู่') }}
                         </x-nav-link>
+                    @endcan
+                    @can('product-list')
                         <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')" wire:navigate>
                             {{ __('สินค้า') }}
                         </x-nav-link>
-                         {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า --}}
-                    <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
-                        {{ __('ลูกค้า') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
-                        {{ __('ซัพพลายเออร์') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
-                        {{ __('ใบสั่งซื้อ') }}
-                    </x-nav-link>
-                     {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย --}}
-                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
-                        {{ __('คำสั่งขาย') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
-                        {{ __('จัดการผู้ใช้') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')" wire:navigate>
-                        {{ __('จัดการ Roles') }}
-                    </x-nav-link>
-                    @endrole
+                    @endcan
+                    @can('customer-list')
+                        <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
+                            {{ __('ลูกค้า') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('supplier-list')
+                        <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                            {{ __('ซัพพลายเออร์') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('purchase-order-list')
+                        <x-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
+                            {{ __('ใบสั่งซื้อ') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('sales-order-list')
+                        <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
+                            {{ __('คำสั่งขาย') }}
+                        </x-nav-link>
+                    @endcan
+                    {{-- คอมเมนต์: เพิ่มเมนูสำหรับระบบการเงิน --}}
+                    @can('view finance')
+                        <x-nav-link :href="route('finance.index')" :active="request()->routeIs('finance.*')" wire:navigate>
+                            {{ __('การเงิน') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
                   <!-- Notifications Bell -->
@@ -104,7 +116,8 @@ new class extends Component
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                {{-- คอมเมนต์: เพิ่ม aria-label เพื่อให้ปุ่มมีข้อความที่เข้าถึงได้ (Accessibility) --}}
+                <button @click="open = ! open" aria-label="Toggle navigation" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -120,35 +133,49 @@ new class extends Component
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            {{-- แก้ไขจาก x-nav-link เป็น x-responsive-nav-link ที่นี่ --}}
-            @role('Admin')
+
+            {{-- คอมเมนต์: เปลี่ยนจากการเช็ค Role 'Admin' มาเป็นการเช็ค Permission ในมุมมอง Responsive --}}
+            @can('user-list')
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('จัดการผู้ใช้งาน') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('category-list')
                 <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')" wire:navigate>
                     {{ __('หมวดหมู่') }}
                 </x-responsive-nav-link>
+            @endcan
+            @can('product-list')
                 <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')" wire:navigate>
                     {{ __('สินค้า') }}
                 </x-responsive-nav-link>
-                {{-- เพิ่มลิงก์สำหรับหน้าลูกค้า (สำหรับมือถือ) --}}
-            <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
-                {{ __('ลูกค้า') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
-                {{ __('ซัพพลายเออร์') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
-                {{ __('ใบสั่งซื้อ') }}
-            </x-responsive-nav-link>
-            {{-- เพิ่มลิงก์สำหรับหน้าคำสั่งขาย (สำหรับมือถือ) --}}
-            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
-                {{ __('คำสั่งขาย') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
-                {{ __('จัดการผู้ใช้') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')" wire:navigate>
-                {{ __('จัดการ Roles') }}
-            </x-responsive-nav-link>
-            @endrole
+            @endcan
+            @can('customer-list')
+                <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')" wire:navigate>
+                    {{ __('ลูกค้า') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('supplier-list')
+                <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                    {{ __('ซัพพลายเออร์') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('purchase-order-list')
+                <x-responsive-nav-link :href="route('purchase-orders.index')" :active="request()->routeIs('purchase-orders.*')" wire:navigate>
+                    {{ __('ใบสั่งซื้อ') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('sales-order-list')
+                <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')" wire:navigate>
+                    {{ __('คำสั่งขาย') }}
+                </x-responsive-nav-link>
+            @endcan
+            {{-- คอมเมนต์: เพิ่มเมนูสำหรับระบบการเงิน (Responsive) --}}
+            @can('view finance')
+                <x-responsive-nav-link :href="route('finance.index')" :active="request()->routeIs('finance.*')" wire:navigate>
+                    {{ __('การเงิน') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

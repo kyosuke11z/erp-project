@@ -17,6 +17,12 @@ class PurchaseOrderSeeder extends Seeder
      */
     public function run(): void
     {
+        // คอมเมนต์: ล้างข้อมูลเก่าในตารางที่เกี่ยวข้องก่อน เพื่อให้สามารถรัน seeder ซ้ำได้
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        PurchaseOrder::truncate();
+        PurchaseOrderItem::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // ใช้ pluck เพื่อประสิทธิภาพที่ดีกว่าในการดึงข้อมูลจำนวนมาก
         $supplierIds = Supplier::pluck('id');
         $products = Product::all();
@@ -32,13 +38,14 @@ class PurchaseOrderSeeder extends Seeder
         // ใช้ Transaction เพื่อให้แน่ใจว่าข้อมูลจะถูกสร้างอย่างสมบูรณ์หรือไม่ก็ไม่ถูกสร้างเลย
         DB::transaction(function () use ($supplierIds, $products, $statuses) {
             for ($i = 0; $i < 50; $i++) {
-                // 1. สร้าง PO หลักพร้อมสถานะแบบสุ่ม
+                // 1. สร้าง PO หลักพร้อมสถานะแบบสุ่ม และกำหนด po_number ที่ไม่ซ้ำกัน
                 $po = PurchaseOrder::create([
                     'po_number' => 'PO-' . str_pad($i + 1, 5, '0', STR_PAD_LEFT),
                     'supplier_id' => $supplierIds->random(),
                     'order_date' => now()->subDays(rand(1, 365)),
                     'status' => $statuses[array_rand($statuses)],
-                    'notes' => 'หมายเหตุทดสอบ ' . ($i + 1),
+                    'notes' => 'หมายเหตุทดสอบสำหรับ PO-' . str_pad($i + 1, 5, '0', STR_PAD_LEFT),
+                    'total_amount' => 0, // จะถูกอัปเดตทีหลัง
                 ]);
 
                 $totalAmount = 0;

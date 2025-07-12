@@ -5,6 +5,7 @@ namespace App\Livewire\PurchaseOrders;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -19,8 +20,8 @@ class CreatePage extends Component
     public $notes = '';
 
     // Properties สำหรับรายการสินค้า
-    public $orderItems = [];
-    public $allProducts = [];
+    public array $orderItems = [];
+    public Collection $allProducts;
     public $allSuppliers = [];
 
     // ยอดรวม
@@ -56,6 +57,9 @@ class CreatePage extends Component
     // เมธอด Mount จะทำงานเมื่อ Component ถูกสร้างขึ้น
     public function mount()
     {
+        // คอมเมนต์: ตรวจสอบสิทธิ์การสร้างโดยใช้ Policy ที่เราสร้างไว้
+        $this->authorize('create', PurchaseOrder::class);
+
         $this->order_date = now()->format('Y-m-d');
         $this->allSuppliers = Supplier::orderBy('name')->get();
         $this->allProducts = Product::orderBy('name')->get();
@@ -126,6 +130,7 @@ class CreatePage extends Component
                 'notes' => $this->notes,
                 'total_amount' => $this->total_amount,
                 'status' => 'pending',
+                'user_id' => auth()->id(), // คอมเมนต์: บันทึก ID ของผู้ใช้ที่สร้างรายการ
                 'po_number' => 'TEMP', // ใส่ค่าชั่วคราวเพื่อไม่ให้ validation error
             ]);
 

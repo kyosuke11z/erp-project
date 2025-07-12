@@ -46,6 +46,9 @@ class EditPage extends Component
 
     public function mount(SalesOrder $salesOrder)
     {
+        // คอมเมนต์: ตรวจสอบสิทธิ์การแก้ไขโดยใช้ Policy ที่เราสร้างไว้
+        $this->authorize('update', $salesOrder);
+
         // ป้องกันไม่ให้แก้ไขออเดอร์ที่ไม่ได้อยู่ในสถานะ pending
         if ($salesOrder->status !== 'pending') {
             session()->flash('error', 'ไม่สามารถแก้ไขใบสั่งขายที่ไม่ได้อยู่ในสถานะรอดำเนินการได้');
@@ -82,7 +85,8 @@ class EditPage extends Component
 
         if ($field === 'product_id' && !empty($value)) {
             $product = $this->allProducts->find($value);
-            $this->orderItems[$index]['price'] = $product?->price ?? 0;
+            // คอมเมนต์: แก้ไขให้ดึงราคาจากฟิลด์ 'selling_price' ของโมเดล Product
+            $this->orderItems[$index]['price'] = $product?->selling_price ?? 0;
             $this->orderItems[$index]['stock'] = $product?->quantity ?? 0; // ดึงข้อมูลสต็อก
         }
 

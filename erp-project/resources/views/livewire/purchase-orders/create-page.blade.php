@@ -62,11 +62,11 @@
                                             @error('orderItems.'.$index.'.product_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </td>
                                         <td>
-                                            <input type="number" wire:model.live="orderItems.{{ $index }}.quantity" min="1" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                            <input type="number" wire:model.live.debounce.300ms="orderItems.{{ $index }}.quantity" min="1" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                             @error('orderItems.'.$index.'.quantity') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </td>
                                         <td>
-                                            <input type="number" step="0.01" wire:model.live="orderItems.{{ $index }}.price" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                            <input type="number" step="0.01" wire:model.live.debounce.300ms="orderItems.{{ $index }}.price" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                             @error('orderItems.'.$index.'.price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </td>
                                         <td>
