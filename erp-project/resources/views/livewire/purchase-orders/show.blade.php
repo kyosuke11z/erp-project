@@ -30,6 +30,7 @@
                         <p class="max-w-2xl mt-1 text-sm text-gray-500">
                             สถานะปัจจุบัน: <span class="font-semibold text-white px-2 py-1 rounded-full text-xs {{ 
                                 match($purchaseOrder->status) {
+                                    'paid' => 'bg-emerald-600',
                                     'pending' => 'bg-yellow-500',
                                     'completed' => 'bg-blue-500',
                                     'partially_received' => 'bg-teal-500',
@@ -49,6 +50,17 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 รับสินค้า
+                            </a>
+                        @endif
+
+                        {{-- Record Payment Button --}}
+                        @if($purchaseOrder->status === 'pending')
+                            <a href="{{ route('purchase-orders.payment.create', $purchaseOrder) }}" wire:navigate
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                บันทึกการจ่ายเงิน
                             </a>
                         @endif
                         

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Livewire\Sales;
-
 use App\Models\SalesOrder;
 use Livewire\Component;
 use Livewire\Attributes\Rule;

@@ -71,11 +71,35 @@ new class extends Component
                             {{ __('คำสั่งขาย') }}
                         </x-nav-link>
                     @endcan
-                    {{-- คอมเมนต์: เพิ่มเมนูสำหรับระบบการเงิน --}}
+                    {{-- Finance Dropdown --}}
                     @can('view finance')
-                        <x-nav-link :href="route('finance.index')" :active="request()->routeIs('finance.*')" wire:navigate>
-                            {{ __('การเงิน') }}
-                        </x-nav-link>
+                        <div class="relative flex items-center">
+                            <x-dropdown align="left" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out {{ request()->routeIs('finance.*') ? 'border-indigo-400 text-gray-900 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                        <div>{{ __('การเงิน') }}</div>
+                                        <div class="ms-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
+
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('finance.index')" :active="request()->routeIs('finance.index')" wire:navigate>
+                                        {{ __('รายการการเงิน') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('finance.categories.index')" :active="request()->routeIs('finance.categories.index')" wire:navigate>
+                                        {{ __('จัดการหมวดหมู่') }}
+                                    </x-dropdown-link>
+                                    {{-- คอมเมนต์: เพิ่มลิงก์สำหรับหน้ารายงานสรุป --}}
+                                    <x-dropdown-link :href="route('finance.report')" :active="request()->routeIs('finance.report')" wire:navigate>
+                                        {{ __('รายงานสรุป') }}
+                                    </x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
                     @endcan
                 </div>
             </div>
@@ -170,16 +194,29 @@ new class extends Component
                     {{ __('คำสั่งขาย') }}
                 </x-responsive-nav-link>
             @endcan
-            {{-- คอมเมนต์: เพิ่มเมนูสำหรับระบบการเงิน (Responsive) --}}
-            @can('view finance')
-                <x-responsive-nav-link :href="route('finance.index')" :active="request()->routeIs('finance.*')" wire:navigate>
-                    {{ __('การเงิน') }}
-                </x-responsive-nav-link>
-            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
+            {{-- คอมเมนต์: เพิ่มเมนูสำหรับระบบการเงิน (Responsive) --}}
+            @can('view finance')
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800">{{ __('การเงิน') }}</div>
+                </div>
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('finance.index')" :active="request()->routeIs('finance.index')" wire:navigate>
+                        {{ __('รายการการเงิน') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('finance.categories.index')" :active="request()->routeIs('finance.categories.index')" wire:navigate>
+                        {{ __('จัดการหมวดหมู่') }}
+                    </x-responsive-nav-link>
+                    {{-- คอมเมนต์: เพิ่มลิงก์สำหรับหน้ารายงานสรุป (Responsive) --}}
+                    <x-responsive-nav-link :href="route('finance.report')" :active="request()->routeIs('finance.report')" wire:navigate>
+                        {{ __('รายงานสรุป') }}
+                    </x-responsive-nav-link>
+                </div>
+            @endcan
+
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
                 <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>

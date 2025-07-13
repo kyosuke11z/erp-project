@@ -11,6 +11,8 @@ use App\Livewire\PurchaseOrders;
 use App\Livewire\Sales;
 use App\Livewire\GoodsReceipt;
 use App\Http\Controllers\FinancialTransactionController;
+use App\Http\Controllers\Finance\FinancialReportController;
+use App\Livewire\Finance\FinancialReport;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Livewire\SupplierReturn\IndexPage as SupplierReturnIndex;
 use App\Livewire\SupplierReturn\ShowPage as SupplierReturnShow;
@@ -34,6 +36,13 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/', [FinancialTransactionController::class, 'index'])->name('index');
         // คอมเมนต์: เพิ่ม Route สำหรับหน้าสร้างและแก้ไขรายการการเงิน
         Route::get('/create', \App\Livewire\Finance\CreatePage::class)->name('create');
+        // คอมเมนต์: เพิ่ม Route สำหรับจัดการหมวดหมู่การเงิน
+        Route::get('/categories', \App\Livewire\Finance\CategoryManager::class)->name('categories.index');
+        // คอมเมนต์: เพิ่ม Route สำหรับหน้ารายงานการเงิน
+        Route::get('/report', FinancialReport::class)->name('report');
+        // คอมเมนต์: แก้ไขการกำหนด Route สำหรับ Export PDF ให้ถูกต้องภายใต้ group 'finance'
+        // URL จะเป็น /finance/reports/pdf และชื่อ Route จะเป็น finance.report.pdf
+        Route::get('/reports/pdf', [FinancialReportController::class, 'exportPdf'])->name('report.pdf');
         Route::get('/{transaction}/edit', \App\Livewire\Finance\EditPage::class)->name('edit');
     });
 
@@ -71,6 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/create', Sales\CreatePage::class)->name('create');
         Route::get('/{salesOrder}', Sales\OrderShow::class)->name('show');
         Route::get('/{salesOrder}/edit', Sales\EditPage::class)->name('edit');
+        // คอมเมนต์: แก้ไขชื่อ Route โดยการลบ 'sales.' ที่ซ้ำซ้อนออก
+        Route::get('/{salesOrder}/payment/create', \App\Livewire\Sales\RecordPaymentPage::class)->name('payment.create');
     });
 
     // Suppliers Module
@@ -84,6 +95,8 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/create', PurchaseOrders\CreatePage::class)->name('create');
         Route::get('/{purchaseOrder}', PurchaseOrders\Show::class)->name('show');
         Route::get('/{purchaseOrder}/edit', PurchaseOrders\EditPage::class)->name('edit');
+        // คอมเมนต์: เพิ่ม Route สำหรับหน้าบันทึกการจ่ายเงิน
+        Route::get('/{purchaseOrder}/payment/create', \App\Livewire\PurchaseOrders\RecordPaymentPage::class)->name('payment.create');
         Route::get('/{purchaseOrder}/pdf', [PurchaseOrderController::class, 'generatePdf'])->name('pdf');
     });
 

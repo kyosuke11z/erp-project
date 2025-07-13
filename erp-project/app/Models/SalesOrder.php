@@ -37,8 +37,13 @@ class SalesOrder extends Model
     }
 
     /**
-     * Get all of the items for the SalesOrder
+     * กำหนดความสัมพันธ์แบบ Polymorphic (one-to-many) ไปยัง FinancialTransaction
+     * หนึ่ง Sales Order สามารถมีรายการทางการเงินได้หลายรายการ
      */
+    public function financialTransactions(): MorphMany
+    {
+        return $this->morphMany(FinancialTransaction::class, 'related_model');
+    }
     public function items(): HasMany
     {
         return $this->hasMany(SalesOrderItem::class);

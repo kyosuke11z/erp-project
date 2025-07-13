@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,7 @@ class PurchaseOrder extends Model
         'expected_delivery_date',
         'total_amount',
         'status',
+        'paid_at',
         'notes',
     ];
 
@@ -52,5 +54,13 @@ class PurchaseOrder extends Model
      public function goodsReceipts(): HasMany
     {
         return $this->hasMany(GoodsReceipt::class);
+    }
+     /**
+     * กำหนดความสัมพันธ์แบบ Polymorphic (one-to-many) ไปยัง FinancialTransaction
+     * หนึ่ง Purchase Order สามารถมีรายการทางการเงิน (รายจ่าย) ได้หลายรายการ
+     */
+    public function financialTransactions(): MorphMany
+    {
+        return $this->morphMany(FinancialTransaction::class, 'related_model');
     }
 }

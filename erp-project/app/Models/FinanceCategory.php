@@ -13,7 +13,7 @@ class FinanceCategory extends Model
     /**
      * คอมเมนต์: กำหนดฟิลด์ที่สามารถกรอกข้อมูลได้ (Mass Assignable)
      */
-    protected $fillable = ['name', 'type'];
+    protected $fillable = ['name', 'type', 'description'];
 
     /**
      * คอมเมนต์: สร้างความสัมพันธ์ว่าหนึ่งหมวดหมู่ สามารถมีได้หลายรายการ (transactions)
