@@ -15,19 +15,19 @@ use App\Http\Controllers\Finance\FinancialReportController;
 use App\Livewire\Finance\FinancialReport;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Livewire\SupplierReturn\IndexPage as SupplierReturnIndex;
+use App\Livewire\Dashboard\Index as DashboardIndex; // คอมเมนต์: เพิ่ม namespace สำหรับ Dashboard
 use App\Livewire\SupplierReturn\ShowPage as SupplierReturnShow;
 use App\Livewire\SupplierReturn\CreatePage as SupplierReturnCreate;
 use App\Livewire\Products\CreatePage as ProductCreatePage;
 use App\Livewire\Products\EditPage as ProductEditPage;
 use App\Livewire\Users; // คอมเมนต์: เพิ่ม namespace สำหรับ User Management
 
-
 Route::view('/', 'welcome');
 
 // จัดกลุ่ม Route ที่ต้องมีการยืนยันตัวตน (auth)
 Route::middleware(['auth', 'verified'])->group(function () { // and email verification
     // Core application routes
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardIndex::class)->name('dashboard'); // คอมเมนต์: เปลี่ยนไปใช้ Livewire Component สำหรับ Dashboard
     Route::view('profile', 'profile')->name('profile');
 
     // Finance Module
