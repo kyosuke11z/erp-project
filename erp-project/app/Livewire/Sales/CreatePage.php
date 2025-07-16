@@ -120,7 +120,17 @@ class CreatePage extends Component
 
         $salesOrder = DB::transaction(function () {
             // 1. สร้าง SalesOrder หลัก
+
+            // สร้างเลขที่เอกสาร (Order Number) ที่มีความหมาย
+            // รูปแบบ: SO-YYYYMM-XXXX (เช่น SO-202405-0001)
+            $prefix = 'SO-' . date('Ym') . '-';
+            $lastOrder = SalesOrder::where('order_number', 'like', $prefix . '%')->orderBy('id', 'desc')->first();
+            $runningNumber = $lastOrder ? (int) substr($lastOrder->order_number, -4) + 1 : 1;
+            $orderNumber = $prefix . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
+
             $order = SalesOrder::create([
+                // เพิ่ม order_number ที่สร้างขึ้นใหม่
+                'order_number' => $orderNumber,
                 'customer_id' => $this->customer_id,
                 'order_date' => $this->order_date,
                 'status' => 'pending', // Default status

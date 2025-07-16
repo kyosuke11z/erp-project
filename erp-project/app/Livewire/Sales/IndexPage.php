@@ -5,8 +5,10 @@ namespace App\Livewire\Sales;
 use App\Models\SalesOrder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 
+#[Layout('layouts.app')]
 class IndexPage extends Component
 {
     use WithPagination;
@@ -41,17 +43,29 @@ class IndexPage extends Component
 
     public function render()
     {
-        $salesOrders = SalesOrder::with('customer')
+        $query = SalesOrder::with('customer')
+            // บังคับให้เลือกคอลัมน์ที่จำเป็นทั้งหมดมาอย่างชัดเจน
+            // เพื่อป้องกันปัญหาจาก Global Scope หรือ Trait ที่อาจซ่อนคอลัมน์บางตัว
+            ->select([
+                'sales_orders.id',
+                'sales_orders.order_number',
+                'sales_orders.customer_id',
+                'sales_orders.order_date',
+                'sales_orders.total_amount',
+                'sales_orders.status',
+            ])
             ->when($this->search, function ($query) {
-                $query->where('id', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('customer', function ($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    });
+                // ปรับปรุงการค้นหาให้รองรับ order_number และชื่อลูกค้า
+                $query->where(function ($subQuery) {
+                    $subQuery->where('order_number', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('customer', function ($customerQuery) {
+                            $customerQuery->where('name', 'like', '%' . $this->search . '%');
+                        });
+                });
             })
-            ->latest()
-            ->paginate(10);
+            ->latest('sales_orders.created_at'); // ระบุชื่อตารางเพื่อความชัดเจน
 
-        return view('livewire.sales.index-page', ['salesOrders' => $salesOrders])->layout('layouts.app');
+        $salesOrders = $query->paginate(10);
+        return view('livewire.sales.index-page', compact('salesOrders'));
     }
 }
-

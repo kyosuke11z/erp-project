@@ -50,7 +50,7 @@
                             <tbody class="divide-y divide-gray-200">
                                 @forelse ($salesOrders as $order)
                                     <tr>
-                                        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ $order->id }}</td>
+                                        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ $order->order_number ?? '#' . $order->id }}</td>{{-- แสดง order_number ถ้ามีค่า, ถ้าไม่มี (เป็นข้อมูลเก่า) ให้แสดง id แทน --}}
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $order->customer->name ?? 'N/A' }}</td>
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ $order->order_date->format('d/m/Y') }}</td>
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700 text-right">฿{{ number_format($order->total_amount, 2) }}</td>
