@@ -157,15 +157,15 @@
     -   [x] จัดทำ API Controller และ Resource เพื่อจัดรูปแบบ JSON Response
     -   [x] เพิ่ม Pagination และ Filtering ใน API Response
     -   [x] เพิ่มเมธอด `show` สำหรับดึงข้อมูลรายการเดียว
--   [ ] **API Authentication:**
-    -   [ ] ติดตั้งและใช้งาน Laravel Sanctum สำหรับ Token-based Auth
-    -   [ ] สร้างระบบ login สำหรับ external client
--   [ ] **SQL Query Optimization:**
-    -   [ ] เขียน Query ที่ซับซ้อนขึ้น เช่น JOIN หลายตาราง, Group By, CTE
-    -   [ ] รายงานยอดขายรายเดือน / สินค้าขายดี Top N
--   [ ] **Testing:**
-    -   [ ] สร้าง Unit Test สำหรับ Business Logic ที่สำคัญ
-    -   [ ] เขียน Feature Test สำหรับ API และ Form Submission
+-   [x] **API Authentication:**
+    -   [x] ติดตั้งและใช้งาน Laravel Sanctum สำหรับ Token-based Auth
+    -   [x] สร้างระบบ login, logout สำหรับ external client
+-   [x] **SQL Query Optimization:**
+    -   [x] เขียน Query ที่ซับซ้อนขึ้น เช่น JOIN หลายตาราง, Group By, CTE
+    -   [x] รายงานยอดขายรายเดือน / สินค้าขายดี Top N
+-   [x] **Testing:**
+    -   [x] สร้าง Unit Test สำหรับ Business Logic ที่สำคัญ
+    -   [x] เขียน Feature Test สำหรับ API และ Form Submission
 -   [ ] **Documentation & Presentation:**
     -   [ ] เขียน Flowchart และ Diagram ความสัมพันธ์ของระบบ
     -   [ ] จัดทำ README ภาษาอังกฤษฉบับย่อ

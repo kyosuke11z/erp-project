@@ -7,11 +7,13 @@ use Livewire\Livewire;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 use App\Models\SalesOrder;
+use App\Models\SalesOrderItem;
 use App\Models\PurchaseOrder;
 use App\Models\SupplierReturn;
 use App\Observers\SupplierReturnObserver;
 use App\Observers\PurchaseOrderObserver;
 use App\Observers\SalesOrderObserver;
+use App\Observers\SalesOrderItemObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         // คอมเมนต์: ลงทะเบียน Model Observers
         // Observer จะทำงานอัตโนมัติเมื่อมี event เกิดขึ้นกับ Model (เช่น created, updated)
         SalesOrder::observe(SalesOrderObserver::class);
+        SalesOrderItem::observe(SalesOrderItemObserver::class);
         PurchaseOrder::observe(PurchaseOrderObserver::class);
         // คอมเมนต์: เพิ่ม Macro 'thaidate' ให้กับ Carbon เพื่อแปลงวันที่เป็นรูปแบบไทยพร้อมปี พ.ศ.
         // ทำให้เราสามารถเรียกใช้ ->thaidate() ได้ทั่วทั้งโปรเจกต์

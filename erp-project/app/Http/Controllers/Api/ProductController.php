@@ -6,10 +6,24 @@ namespace App\Http\Controllers\Api;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreProductRequest;
+use App\Http\Requests\Api\UpdateProductRequest;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        // กำหนดสิทธิ์การเข้าถึงสำหรับแต่ละ Action อย่างชัดเจนโดยใช้ Middleware
+        // Laravel จะเรียกใช้ Policy ที่เราลงทะเบียนไว้โดยอัตโนมัติ
+        // 'can:ability,model'
+        $this->middleware('can:viewAny,' . Product::class)->only('index');
+        $this->middleware('can:view,product')->only('show');
+        $this->middleware('can:create,' . Product::class)->only('store');
+        $this->middleware('can:update,product')->only('update');
+        $this->middleware('can:delete,product')->only('destroy');
+    }
+
     public function index(Request $request)
     {
         // เริ่มต้นสร้าง Query Builder
@@ -33,6 +47,19 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\Api\StoreProductRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(StoreProductRequest $request)
+    {
+        $product = Product::create($request->toModelData());
+
+        return (new ProductResource($product->load('category')))->response()->setStatusCode(201);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -45,5 +72,31 @@ class ProductController extends Controller
         // ไม่จำเป็นต้องใช้ ::collection() เพราะเป็นข้อมูลแค่รายการเดียว
         return new ProductResource($product->load('category'));
     }
- 
+         /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Product       $product
+     * @return \App\Http\Resources\ProductResource
+     */
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+        // Use array_filter to remove null values so we only update fields that were sent
+        $product->update(array_filter($request->toModelData()));
+
+        return new ProductResource($product->load('category'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return response()->noContent(); // ส่งกลับ Status 204 No Content ซึ่งเป็นมาตรฐานสำหรับการลบสำเร็จ
+    }
 }

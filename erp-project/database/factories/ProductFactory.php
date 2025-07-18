@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
+            'category_id' => Category::factory(), // <-- เพิ่มบรรทัดนี้
             'name' => ucfirst($this->faker->words(3, true)),
             'sku' => strtoupper($this->faker->unique()->bothify('SKU-####??')),
             'description' => $this->faker->sentence(15),
