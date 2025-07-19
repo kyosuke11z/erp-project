@@ -78,6 +78,47 @@
     -   มีการจัดการเวอร์ชันของ API (API Versioning)
 ---
 
+## 🌊 ภาพรวมการทำงานของระบบ (System Workflow)
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Login[User Login]
+    Login --> Dashboard[Dashboard - เลือกโมดูล]
+    Dashboard --> ModuleSelection[Module Selection]
+
+    ModuleSelection --> Sales
+    ModuleSelection --> Purchase
+    ModuleSelection --> ProductCustomer
+
+    subgraph Sales
+        CreateOrder[Create Sales Order] --> CheckStock[Check Stock Availability]
+        CheckStock --> ReduceStock[Reduce Product Quantity]
+        ReduceStock --> GenerateInvoice[Generate Invoice]
+        GenerateInvoice --> NotifyStock[Notify Low Stock]
+    end
+
+    subgraph Purchase
+        CreatePO[Create Purchase Order] --> ReceiveGoods[Receive Goods]
+        ReceiveGoods --> UpdateStock[Update Stock Quantity]
+        UpdateStock --> ReturnGoods[Optional: Return Goods]
+    end
+
+    subgraph ProductCustomer
+        ManageProduct[Manage Product Info] --> ProductTable[Product Table]
+        ManageCustomer[Manage Customer Info] --> CustomerTable[Customer Table]
+    end
+
+    Finance[Log Financial Transaction] --> LinkOrder[Link with Sales/Purchase Order]
+    
+    NotifyStock --> Finance
+    CustomerTable --> Finance
+    ReturnGoods --> Finance
+
+    LinkOrder --> End([End])
+```
+
+---
+
 ## 🛠️ Technology Stack (เทคโนโลยีที่ใช้)
 
 -   **Backend:** Laravel v12
@@ -151,7 +192,6 @@
     -   [x] Export รายงานเป็น PDF และ Excel
     -   [x] ผูกข้อมูลรายรับกับ Sales Order (กรณีลูกค้าชำระเงิน)
     -   [x] ผูกข้อมูลรายจ่ายกับ Purchase Order
--   [ ] **Settings:** หน้าตั้งค่าระบบทั่วไป (เช่น สกุลเงิน, ชื่อบริษัท)
 -   [x] **API Development:**
     -   [x] สร้าง RESTful API สำหรับโมดูลหลัก (Products, Customers, Sales)
     -   [x] จัดทำ API Controller และ Resource เพื่อจัดรูปแบบ JSON Response
@@ -166,10 +206,23 @@
 -   [x] **Testing:**
     -   [x] สร้าง Unit Test สำหรับ Business Logic ที่สำคัญ
     -   [x] เขียน Feature Test สำหรับ API และ Form Submission
--   [ ] **Documentation & Presentation:**
-    -   [ ] เขียน Flowchart และ Diagram ความสัมพันธ์ของระบบ
+-   [x] **Documentation & Presentation:**
+    -   [x] เขียน Flowchart และ Diagram ความสัมพันธ์ของระบบ
     -   [ ] จัดทำ README ภาษาอังกฤษฉบับย่อ
     -   [ ] เพิ่มภาพตัวอย่าง UI หรือ GIF แสดงการใช้งาน
+
+---
+
+## 📊 Diagram ความสัมพันธ์ของข้อมูล (ER Diagram)
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ SALES_ORDER : places
+    SALES_ORDER ||--|{ SALES_ORDER_ITEM : contains
+    SALES_ORDER_ITEM }|--|| PRODUCT : references
+    PRODUCT }|--|| CATEGORY : belongs_to
+```
+
 ---
 
 ## 📄 License
