@@ -192,6 +192,7 @@ flowchart TD
     -   [x] Export รายงานเป็น PDF และ Excel
     -   [x] ผูกข้อมูลรายรับกับ Sales Order (กรณีลูกค้าชำระเงิน)
     -   [x] ผูกข้อมูลรายจ่ายกับ Purchase Order
+-   [ ] **Settings:** หน้าตั้งค่าระบบทั่วไป (เช่น สกุลเงิน, ชื่อบริษัท)
 -   [x] **API Development:**
     -   [x] สร้าง RESTful API สำหรับโมดูลหลัก (Products, Customers, Sales)
     -   [x] จัดทำ API Controller และ Resource เพื่อจัดรูปแบบ JSON Response
@@ -217,10 +218,30 @@ flowchart TD
 
 ```mermaid
 erDiagram
-    CUSTOMER ||--o{ SALES_ORDER : places
-    SALES_ORDER ||--|{ SALES_ORDER_ITEM : contains
-    SALES_ORDER_ITEM }|--|| PRODUCT : references
-    PRODUCT }|--|| CATEGORY : belongs_to
+    USER ||--o{ SALES_ORDER : "creates"
+    USER ||--o{ PURCHASE_ORDER : "creates"
+    USER ||--o{ GOODS_RECEIPT : "processes"
+    USER ||--o{ SUPPLIER_RETURN : "processes"
+
+    CUSTOMER ||--o{ SALES_ORDER : "places"
+    SALES_ORDER ||--|{ SALES_ORDER_ITEM : "contains"
+    SALES_ORDER_ITEM }|--|| PRODUCT : "references"
+    SALES_ORDER ||--o{ FINANCIAL_TRANSACTION : "generates (income)"
+
+    SUPPLIER ||--o{ PURCHASE_ORDER : "receives"
+    PURCHASE_ORDER ||--|{ PURCHASE_ORDER_ITEM : "contains"
+    PURCHASE_ORDER_ITEM }|--|| PRODUCT : "references"
+    PURCHASE_ORDER ||--o{ GOODS_RECEIPT : "generates"
+    PURCHASE_ORDER ||--o{ FINANCIAL_TRANSACTION : "generates (expense)"
+
+    GOODS_RECEIPT ||--|{ GOODS_RECEIPT_ITEM : "contains"
+    GOODS_RECEIPT_ITEM }|--|| PRODUCT : "references"
+    GOODS_RECEIPT ||--o{ SUPPLIER_RETURN : "can lead to"
+
+    SUPPLIER_RETURN ||--|{ SUPPLIER_RETURN_ITEM : "contains"
+    SUPPLIER_RETURN_ITEM }|--|| PRODUCT : "references"
+
+    PRODUCT }|--|| CATEGORY : "belongs to"
 ```
 
 ---
