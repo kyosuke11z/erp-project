@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
             PurchaseOrderSeeder::class,
             FinanceCategorySeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

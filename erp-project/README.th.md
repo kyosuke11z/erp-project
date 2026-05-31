@@ -193,7 +193,7 @@ flowchart TD
     -   [x] Export รายงานเป็น PDF และ Excel
     -   [x] ผูกข้อมูลรายรับกับ Sales Order (กรณีลูกค้าชำระเงิน)
     -   [x] ผูกข้อมูลรายจ่ายกับ Purchase Order
--   [ ] **Settings:** หน้าตั้งค่าระบบทั่วไป (เช่น สกุลเงิน, ชื่อบริษัท)
+-   [x] **Settings:** หน้าตั้งค่าระบบทั่วไป (ชื่อบริษัท, ที่อยู่, สกุลเงิน, Timezone, รูปแบบวันที่, จำนวนรายการต่อหน้า, การแจ้งเตือนสต็อกต่ำ)
 -   [x] **API Development:**
     -   [x] สร้าง RESTful API สำหรับโมดูลหลัก (Products, Customers, Sales)
     -   [x] จัดทำ API Controller และ Resource เพื่อจัดรูปแบบ JSON Response

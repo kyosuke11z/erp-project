@@ -200,7 +200,7 @@ erDiagram
     -   [x] Export reports to PDF and Excel.
     -   [x] Link income records to Sales Orders (on payment).
     -   [x] Link expense records to Purchase Orders.
--   [ ] **Settings:** General settings page (e.g., currency, company name).
+-   [x] **Settings:** General settings page (company name, address, currency, timezone, date format, pagination, low-stock notification toggle).
 -   [x] **API Development:**
     -   [x] Create RESTful API for core modules (Products, Customers, Sales).
     -   [x] Implement API Controllers and Resources for JSON response formatting.
