@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Import Livewire Component Namespaces for cleaner route definitions
 use App\Livewire\Categories;
 use App\Livewire\Products;
 use App\Livewire\Customers;
@@ -15,33 +14,26 @@ use App\Http\Controllers\Finance\FinancialReportController;
 use App\Livewire\Finance\FinancialReport;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Livewire\SupplierReturn\IndexPage as SupplierReturnIndex;
-use App\Livewire\Dashboard\Index as DashboardIndex; // คอมเมนต์: เพิ่ม namespace สำหรับ Dashboard
+use App\Livewire\Dashboard\Index as DashboardIndex;
 use App\Livewire\SupplierReturn\ShowPage as SupplierReturnShow;
 use App\Livewire\SupplierReturn\CreatePage as SupplierReturnCreate;
 use App\Livewire\Products\CreatePage as ProductCreatePage;
 use App\Livewire\Products\EditPage as ProductEditPage;
-use App\Livewire\Users; // คอมเมนต์: เพิ่ม namespace สำหรับ User Management
+use App\Livewire\Users;
+use App\Livewire\Settings;
 
 Route::view('/', 'welcome');
 
-// จัดกลุ่ม Route ที่ต้องมีการยืนยันตัวตน (auth)
-Route::middleware(['auth', 'verified'])->group(function () { // and email verification
-    // Core application routes
-    Route::get('dashboard', DashboardIndex::class)->name('dashboard'); // คอมเมนต์: เปลี่ยนไปใช้ Livewire Component สำหรับ Dashboard
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', DashboardIndex::class)->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
 
     // Finance Module
-    // คอมเมนต์: กำหนดสิทธิ์ให้ Admin และ Manager เข้าถึงโมดูลการเงิน
     Route::prefix('finance')->name('finance.')->middleware('role:Admin|Manager')->group(function () {
         Route::get('/', [FinancialTransactionController::class, 'index'])->name('index');
-        // คอมเมนต์: เพิ่ม Route สำหรับหน้าสร้างและแก้ไขรายการการเงิน
         Route::get('/create', \App\Livewire\Finance\CreatePage::class)->name('create');
-        // คอมเมนต์: เพิ่ม Route สำหรับจัดการหมวดหมู่การเงิน
         Route::get('/categories', \App\Livewire\Finance\CategoryManager::class)->name('categories.index');
-        // คอมเมนต์: เพิ่ม Route สำหรับหน้ารายงานการเงิน
         Route::get('/report', FinancialReport::class)->name('report');
-        // คอมเมนต์: แก้ไขการกำหนด Route สำหรับ Export PDF ให้ถูกต้องภายใต้ group 'finance'
-        // URL จะเป็น /finance/reports/pdf และชื่อ Route จะเป็น finance.report.pdf
         Route::get('/reports/pdf', [FinancialReportController::class, 'exportPdf'])->name('report.pdf');
         Route::get('/{transaction}/edit', \App\Livewire\Finance\EditPage::class)->name('edit');
     });
@@ -51,19 +43,21 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/', Users\Index::class)->name('index');
     });
 
+    // Settings Module (Admin Only)
+    Route::prefix('settings')->name('settings.')->middleware('role:Admin')->group(function () {
+        Route::get('/', Settings\Index::class)->name('index');
+    });
+
     // Categories Module
-    // คอมเมนต์: กำหนดให้ Admin และ Manager เท่านั้นที่สามารถจัดการหมวดหมู่ได้
     Route::prefix('categories')->name('categories.')->middleware('role:Admin|Manager')->group(function () {
         Route::get('/', Categories\Index::class)->name('index');
         Route::get('/trash', Categories\Trash::class)->name('trash');
     });
 
     // Products Module
-    // คอมเมนต์: กำหนดให้ทุก Role ที่ล็อกอินสามารถเข้าถึงโมดูลสินค้าได้ แต่การกระทำจะถูกจำกัดโดย Policy/Component
     Route::prefix('products')->name('products.')->middleware('role:Admin|Manager|Staff')->group(function () {
         Route::get('/', Products\Index::class)->name('index');
         Route::get('/trash', Products\Trash::class)->name('trash');
-        // คอมเมนต์: เปลี่ยนไปใช้ CreatePage และ EditPage ที่เราสร้างขึ้นใหม่
         Route::get('/create', ProductCreatePage::class)->name('create');
         Route::get('/{product}/edit', ProductEditPage::class)->name('edit');
     });
@@ -80,7 +74,6 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/create', Sales\CreatePage::class)->name('create');
         Route::get('/{salesOrder}', Sales\OrderShow::class)->name('show');
         Route::get('/{salesOrder}/edit', Sales\EditPage::class)->name('edit');
-        // คอมเมนต์: แก้ไขชื่อ Route โดยการลบ 'sales.' ที่ซ้ำซ้อนออก
         Route::get('/{salesOrder}/payment/create', \App\Livewire\Sales\RecordPaymentPage::class)->name('payment.create');
     });
 
@@ -95,19 +88,18 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
         Route::get('/create', PurchaseOrders\CreatePage::class)->name('create');
         Route::get('/{purchaseOrder}', PurchaseOrders\Show::class)->name('show');
         Route::get('/{purchaseOrder}/edit', PurchaseOrders\EditPage::class)->name('edit');
-        // คอมเมนต์: เพิ่ม Route สำหรับหน้าบันทึกการจ่ายเงิน
         Route::get('/{purchaseOrder}/payment/create', \App\Livewire\PurchaseOrders\RecordPaymentPage::class)->name('payment.create');
         Route::get('/{purchaseOrder}/pdf', [PurchaseOrderController::class, 'generatePdf'])->name('pdf');
     });
 
-    // Goods Receipt Module - จัดกลุ่มให้เป็นระเบียบ
+    // Goods Receipt Module
     Route::prefix('goods-receipt')->name('goods-receipt.')->middleware('role:Admin|Manager|Staff')->group(function () {
         Route::get('/create/{purchaseOrder}', GoodsReceipt\CreatePage::class)->name('create');
         Route::get('/{goodsReceipt}', GoodsReceipt\ShowPage::class)->name('show');
         Route::get('/{goodsReceipt}/pdf', [\App\Http\Controllers\GoodsReceiptController::class, 'generatePdf'])->name('pdf');
     });
 
-    // Supplier Returns Module - จัดกลุ่ม Route สำหรับการคืนสินค้า
+    // Supplier Returns Module
     Route::prefix('supplier-returns')->name('supplier-returns.')->middleware('role:Admin|Manager|Staff')->group(function () {
         Route::get('/', SupplierReturnIndex::class)->name('index');
         Route::get('/create/{goodsReceipt}', SupplierReturnCreate::class)->name('create');
@@ -115,5 +107,4 @@ Route::middleware(['auth', 'verified'])->group(function () { // and email verifi
     });
 });
 
-// Authentication routes (e.g., login, register)
 require __DIR__.'/auth.php';
