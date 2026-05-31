@@ -3,7 +3,7 @@
 [![PHP Version](https://img.shields.io/badge/PHP-8.4+-777BB4?style=for-the-badge&logo=php)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![Livewire Version](https://img.shields.io/badge/Livewire-3.x-4d52c1?style=for-the-badge&logo=livewire)](https://livewire.laravel.com)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
 
 > **[Back to English version (กลับสู่เวอร์ชันภาษาอังกฤษ)](README.md)**
 
@@ -123,8 +123,8 @@ flowchart TD
 ## 🛠️ Technology Stack (เทคโนโลยีที่ใช้)
 
 -   **Backend:** Laravel v12
--   **Frontend:** Livewire v3, Tailwind CSS 4.x, Alpine.js
--   **Database:** MySQL
+-   **Frontend:** Livewire v3, Tailwind CSS 3.x, Alpine.js
+-   **Database:** MySQL / SQLite (สำหรับพัฒนา)
 -   **Development Environment:** Docker, Laravel Sail, WSL2 (Ubuntu)
 
 ---
@@ -133,8 +133,8 @@ flowchart TD
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/laravel-erp-portfolio.git
-    cd laravel-erp-portfolio
+    git clone https://github.com/kyosuke11z/erp-project.git
+    cd erp-project/erp-project
     ```
 
 2.  **Install dependencies:**
